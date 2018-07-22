@@ -171,7 +171,7 @@ public class Act3 extends AppCompatActivity implements ActivityCompat.OnRequestP
                 else {
                     Log.d("Act3", "" + ans);
 
-                    Logger.log("Response: " + ans);
+                    Logger.log("Ques: "+qno+" Response: " + ans);
                     loadNextQuestion();
                 }
             }

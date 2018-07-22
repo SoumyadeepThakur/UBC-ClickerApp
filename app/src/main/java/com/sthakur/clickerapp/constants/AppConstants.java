@@ -6,7 +6,7 @@ package com.sthakur.clickerapp.constants;
 
 public class AppConstants
 {
-    public static String BASE_URL = "http://229ef025.ngrok.io/backend/";
+    public static String BASE_URL = "http://192.168.1.64/backend/";
     public static String KEY_STUDENT_ID = "sid";
     public static String KEY_COURSE_ID = "cid";
     public static String KEY_PASSWORD = "passwd";
