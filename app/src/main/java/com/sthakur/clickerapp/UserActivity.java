@@ -28,7 +28,7 @@ public class UserActivity extends AppCompatActivity
             public void onClick(View view)
             {
                 Logger.log("Student Login");
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(getApplicationContext(), MenuActivity.class));
             }
         });
     }

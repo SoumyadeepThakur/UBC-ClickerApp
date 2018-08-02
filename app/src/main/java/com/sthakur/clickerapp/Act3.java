@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -270,10 +271,14 @@ public class Act3 extends AppCompatActivity implements ActivityCompat.OnRequestP
             courseLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
 
             final TextView titleView = new TextView(this);
-            LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            //LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
             titleView.setLayoutParams(lparams);
             //titleView.setTextAppearance(this, android.R.attr.textAppearanceLarge);
             titleView.setText("End of Survey!");
+            titleView.setAllCaps(true);
+            titleView.setGravity(Gravity.CENTER);
+            titleView.setTextSize(16);
             courseLayout.addView(titleView);
             setContentView(courseLayout);
             return;

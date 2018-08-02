@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_main);
         // Set up the login form.
         sharedPref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
@@ -288,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 0;
     }
 
     /**
@@ -383,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
     @Override
     public void onBackPressed()
     {
-        startActivity(new Intent(getApplicationContext(), UserActivity.class));
+        startActivity(new Intent(getApplicationContext(), MenuActivity.class));
     }
 
     /**

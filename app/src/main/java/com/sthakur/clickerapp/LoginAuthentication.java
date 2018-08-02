@@ -86,15 +86,15 @@ class LoginAuthentication
             return false;
         }
     }
-    private boolean endSession()
+    public boolean endSession(String sessKey, String sid)
     {
         HttpJsonParser httpJsonParser = new HttpJsonParser();
         Map<String, String> httpParams = new HashMap<>();
         //Populating request parameters
         Log.d("endsession()", "Populating endsession parameters");
-        httpParams.put(AppConstants.KEY_SKEY, secretKey);
+        httpParams.put(AppConstants.KEY_SKEY, sessKey);
         httpParams.put(AppConstants.KEY_STUDENT_ID, studentId);
-        Log.d("endsession()", AppConstants.KEY_STUDENT_ID+" - "+studentId + " , " + AppConstants.KEY_SKEY + " - "+secretKey);
+        Log.d("endsession()", AppConstants.KEY_SKEY+" - " + sessKey + " , " + AppConstants.KEY_STUDENT_ID + " - "+sid);
         JSONObject jsonObject = httpJsonParser.makeHttpRequest(AppConstants.BASE_URL + "logout.php", "POST", httpParams);
         try {
             success = jsonObject.getInt(AppConstants.KEY_SUCCESS);
@@ -112,6 +112,7 @@ class LoginAuthentication
             return false;
         }
     }
+    //public boolean logout()
     public int getSuccessStatus()
     {return success;}
     public String getSecretKey()

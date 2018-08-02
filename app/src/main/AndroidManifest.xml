@@ -8,7 +8,10 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-feature android:name="android.hardware.location.gps"/>
+
 
     <application
         android:allowBackup="true"
@@ -29,16 +32,16 @@
         </activity>
         <activity
             android:name=".UserActivity"
-            android:label="Welcome"></activity>
+            android:label="@string/welcome"></activity>
         <activity
             android:name=".MainActivity"
-            android:label="login"></activity>
+            android:label="@string/login"></activity>
         <activity
             android:name=".CourseListActivity"
             android:label="@string/course_list"></activity>
         <activity
             android:name=".Act3"
-            android:label="@string/course_list"></activity>
+            android:label="@string/questions"></activity>
         <activity
             android:name=".MenuActivity"
             android:label="@string/title_activity_menu"

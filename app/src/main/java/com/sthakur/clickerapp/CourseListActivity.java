@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -55,7 +56,7 @@ public class CourseListActivity extends AppCompatActivity
         String sid = sharedPref.getString("sidKey", null);
         String sec = sharedPref.getString("secKey", null);
 
-        placeVerifier();
+        //placeVerifier();
         List<String> cl = loadCourses(sid, sec);
         final String[] arr = new String[coursesMap.size()];
         final int[] cId = new int[coursesMap.size()];
@@ -134,10 +135,10 @@ public class CourseListActivity extends AppCompatActivity
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                new LoginAuthentication().endSession(sharedPref.getString("secKey", null), sharedPref.getString("sidKey", null));
                 SharedPreferences.Editor editor =  sharedPref.edit();
                 editor.clear();
                 editor.commit();
-
                 startActivity(new Intent(CourseListActivity.this, MainActivity.class));
             }
         });
@@ -154,6 +155,7 @@ public class CourseListActivity extends AppCompatActivity
         return s;
 
     }
+
     private boolean placeVerifier()
     {
         if (CheckNetworkStatus.isNetworkAvailable(getApplicationContext()))
@@ -226,5 +228,105 @@ public class CourseListActivity extends AppCompatActivity
     public void onBackPressed() {
         // your code.
     }
+
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean>
+    {
+        private final String mEmail;
+        private final String mPassword;
+
+        UserLoginTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+        }
+
+
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // attempt authentication against a network service.
+            return placeVerifier();
+        }
+        private boolean placeVerifier()
+        {
+            if (CheckNetworkStatus.isNetworkAvailable(getApplicationContext()))
+            {
+                if (ContextCompat.checkSelfPermission(CourseListActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                    // Permission is not granted
+                    // Should we show an explanation?
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(CourseListActivity.this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        // Show an explanation to the user *asynchronously* -- don't block
+                        // this thread waiting for the user's response! After the user
+                        // sees the explanation, try again to request the permission.
+                    } else {
+                        // No explanation needed; request the permission
+                        ActivityCompat.requestPermissions(CourseListActivity.this,
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                1);
+
+                        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                        // app-defined int constant. The callback method gets the
+                        // result of the request.
+                    }
+                } else {
+                    // Permission has already been granted
+
+
+                    try {
+                        LocationListener locationListener = new GPSManager();
+
+                        LocationManager locationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+                        List<String> providers = locationManager.getProviders(true);
+                        Location best=null;
+                        for (String provider : providers)
+                        {
+                            Location l = locationManager.getLastKnownLocation(provider);
+                            if (l == null) {
+                                continue;
+                            }
+                            if (best == null || l.getAccuracy() < best.getAccuracy()) {
+                                // Found best last known location: %s", l);
+                                best= l;
+                            }
+                        }
+                        String p = best.toString();
+                        Log.d("gps", p);
+                        return Logger.log("CourseListActivity - location - " + p);
+                        //if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                        //{
+
+                        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+                        //    Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        //    String p = currentLocation.toString();
+                        //}
+                        //String x = ((GPSManager)locationListener).getValues();
+                        //Log.d("Act 3", x);
+
+                    } catch (SecurityException se) {
+                        Log.d("Act3", "cant get loc");
+                    }
+                    finally {
+                        return false;
+                    }
+                }
+                //attemptLogin();
+            }
+            return false;
+        }
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            //mAuthTask = null;
+            //showProgress(false);
+
+
+        }
+
+        @Override
+        protected void onCancelled() {
+
+        }
+    }
 }
+
 
