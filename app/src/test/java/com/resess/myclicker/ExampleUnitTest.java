@@ -1,4 +1,4 @@
-package com.sthakur.clickerapp;
+package com.resess.myclicker;
 
 import org.junit.Test;
 

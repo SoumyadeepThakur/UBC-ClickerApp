@@ -1,4 +1,4 @@
-package com.sthakur.clickerapp;
+package com.resess.myclicker;
 
 import android.Manifest;
 import android.content.Context;
@@ -13,7 +13,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+//import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,11 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sthakur.clickerapp.constants.AppConstants;
+import net.utils.Info;
 
-import net.helper.Logger;
-
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +62,7 @@ public class Act3 extends AppCompatActivity implements ActivityCompat.OnRequestP
     private LocationManager locationManager;
     //private String surveyURL = AppConstants.BASE_URL+"survey.php";
     SharedPreferences sharedPref;
+    String sec2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +74,7 @@ public class Act3 extends AppCompatActivity implements ActivityCompat.OnRequestP
 
         String sid = sharedPref.getString("sidKey", null);
         String sec = sharedPref.getString("secKey", null);
+        sec2 = sec;
         setContentView(R.layout.activity_act3);
 
         Intent i = getIntent();
@@ -104,6 +104,7 @@ public class Act3 extends AppCompatActivity implements ActivityCompat.OnRequestP
                     // Show an explanation to the user *asynchronously* -- don't block
                     // this thread waiting for the user's response! After the user
                     // sees the explanation, try again to request the permission.
+                    Info.log("QuesActivity : " + course + " " + sec2);
                 } else {
                     // No explanation needed; request the permission
                     ActivityCompat.requestPermissions(this,
@@ -113,6 +114,7 @@ public class Act3 extends AppCompatActivity implements ActivityCompat.OnRequestP
                     // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                     // app-defined int constant. The callback method gets the
                     // result of the request.
+                    Info.log("QuesActivity : " + course +" " + sec2);
                 }
             } else {
                 // Permission has already been granted
@@ -135,8 +137,8 @@ public class Act3 extends AppCompatActivity implements ActivityCompat.OnRequestP
                         }
                     }
                     String p = best.toString();
-                    Log.d("gps", p);
-                    Logger.log("Act3 - location - " + p);
+                    //Log.d("gps", p);
+                    Info.log("QuesActivity - location - " + p + " : " + course +" " + sec2);
 
                     //if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
                     //{
@@ -149,12 +151,17 @@ public class Act3 extends AppCompatActivity implements ActivityCompat.OnRequestP
                     //Log.d("Act 3", x);
 
                 } catch (SecurityException se) {
-                    Log.d("Act3", "cant get loc");
+                    //Log.d("Act3", "cant get loc");
+                    Info.log("QuesActivity : " + course + " " + sec2);
+                }
+                catch(Exception e) {
+                    Info.log("QuesActivity : " + course + " " + sec2);
                 }
             }
         }
         catch (Exception e)
-        {Log.d("Act3", "cant get loc");}
+        {//Log.d("Act3", "cant get loc");
+             }
         loadSurvey(sid, sec, String.valueOf(courseId));
         //updateTxtElements(question, answer[0], answer[1], answer[2]);
 
@@ -162,16 +169,16 @@ public class Act3 extends AppCompatActivity implements ActivityCompat.OnRequestP
             @Override
             public void onClick(View view)
             {
-                Log.d("Act3", "click");
+                //Log.d("Act3", "click");
                 int ans = (ans1.isChecked()?1:0)+2*(ans2.isChecked()?1:0)+4*(ans3.isChecked()?1:0)+8*(ans4.isChecked()?1:0);
                 if (ans == 0)
                 {
                     Toast.makeText(Act3.this, "No Answer Selected",  Toast.LENGTH_LONG).show();
                 }
                 else {
-                    Log.d("Act3", "" + ans);
+                    //Log.d("Act3", "" + ans);
 
-                    Logger.log("Response: " + ans);
+                    Info.log(course + " Ques: "+qno+" Response: " + ans + " : " + sec2 + "location - " + sharedPref.getString("lastloc", null));
                     loadNextQuestion();
                 }
             }
@@ -221,9 +228,9 @@ public class Act3 extends AppCompatActivity implements ActivityCompat.OnRequestP
                         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
                         String x = ((GPSManager)locationListener).getValues();
-                        Log.d("Act 3", x);
+                        //Log.d("Act 3", x);
                     } catch (SecurityException se) {
-                        Log.d("Act3", "cant get loc");
+                        //Log.d("Act3", "cant get loc");
                     }
                 } else {
 
@@ -234,6 +241,12 @@ public class Act3 extends AppCompatActivity implements ActivityCompat.OnRequestP
                 return;
             }
         }
+    }
+    @Override
+    public void onPause()
+    {
+        Info.log("onPause - QuesActivity");
+        super.onPause();
     }
 
 
@@ -262,18 +275,22 @@ public class Act3 extends AppCompatActivity implements ActivityCompat.OnRequestP
         if (qno == questions.size())
         {
             // End of survey
-            Log.d("survey()","End of survey");
-            Logger.log("End of survey");
+            //Log.d("survey()","End of survey");
+            Info.log("End of survey : " + sec2 + " location - " + sharedPref.getString("lastloc", null));
 
             LinearLayout courseLayout = new LinearLayout(this);
             courseLayout.setOrientation(LinearLayout.VERTICAL);
             courseLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
 
             final TextView titleView = new TextView(this);
-            LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            //LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
             titleView.setLayoutParams(lparams);
             //titleView.setTextAppearance(this, android.R.attr.textAppearanceLarge);
             titleView.setText("End of Survey!");
+            titleView.setAllCaps(true);
+            titleView.setGravity(Gravity.CENTER);
+            titleView.setTextSize(16);
             courseLayout.addView(titleView);
             setContentView(courseLayout);
             return;

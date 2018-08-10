@@ -1,4 +1,4 @@
-package com.sthakur.clickerapp;
+package com.resess.myclicker;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -11,8 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +28,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
+//import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,13 +40,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.helper.CheckNetworkStatus;
-import net.helper.Logger;
+import com.resess.myclicker.constants.AppConstants;
+
+import net.utils.CheckNetworkStatus;
+import net.utils.Info;
+import net.utils.SHA1;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -82,7 +82,10 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_main);
+
         // Set up the login form.
         sharedPref = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         if (sharedPref.contains(studentID))
@@ -90,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
             startActivity(new Intent(getApplicationContext(), CourseListActivity.class));
         }
         mEmailView = (AutoCompleteTextView) findViewById(R.id.sid);
-        populateAutoComplete();
+        //populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -104,14 +107,18 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        final Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (CheckNetworkStatus.isNetworkAvailable(getApplicationContext()))
                 {
-                    if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    Info.log("Login: " + mEmailView.getText().toString());
+                    attemptLogin();
 
+                    /*
+                    if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+ 
                         // Permission is not granted
                         // Should we show an explanation?
                         if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
@@ -119,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
                             // Show an explanation to the user *asynchronously* -- don't block
                             // this thread waiting for the user's response! After the user
                             // sees the explanation, try again to request the permission.
+                            Info.log("MainActivity : " + mEmailView.getText().toString());
                         } else {
                             // No explanation needed; request the permission
                             ActivityCompat.requestPermissions(MainActivity.this,
@@ -128,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
                             // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                             // app-defined int constant. The callback method gets the
                             // result of the request.
+                            Info.log("MainActivity : " + mEmailView.getText().toString());
                         }
                     } else {
                         // Permission has already been granted
@@ -151,8 +160,8 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
                                 }
                             }
                             String p = best.toString();
-                            Log.d("gps", p);
-                            Logger.log("MainActivity - location - " + p);
+                            //Log.d("gps", p);
+                            Info.log("MainActivity - location - " + p + " : " + mEmailView.getText().toString());
                             //if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
                             //{
 
@@ -164,10 +173,15 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
                             //Log.d("Act 3", x);
 
                         } catch (SecurityException se) {
-                            Log.d("Act3", "cant get loc");
+                            //Log.d("Act3", "cant get loc");
+                            Info.log("MainActivity : " + mEmailView.getText().toString());
+                        }
+                        catch(Exception e)
+                        {
+                            Info.log("MainActivity : " + mEmailView.getText().toString());
                         }
                     }
-                    attemptLogin();
+                    */
                 }
                 else {
                     Context context = getApplicationContext();
@@ -185,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    /*
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
@@ -214,10 +229,12 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
         }
         return false;
     }
+    */
 
     /**
      * Callback received when a permissions request has been completed.
      */
+    /*
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -228,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
         }
     }
 
-
+    */
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -245,7 +262,8 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        String password = SHA1.md5(mPasswordView.getText().toString());
+        mPasswordView.setText(password);
 
         boolean cancel = false;
         View focusView = null;
@@ -288,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 0;
     }
 
     /**
@@ -325,6 +343,12 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+    }
+    @Override
+    public void onPause()
+    {
+        Info.log("Paused - LoginActivity");
+        super.onPause();
     }
 
     @Override
@@ -383,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
     @Override
     public void onBackPressed()
     {
-        startActivity(new Intent(getApplicationContext(), UserActivity.class));
+        startActivity(new Intent(getApplicationContext(), MenuActivity.class));
     }
 
     /**
@@ -405,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
         @Override
         protected Boolean doInBackground(Void... params) {
             // attempt authentication against a network service.
-            Log.d("MainActivity", mEmail+" , "+mPassword);
+           // Log.d("MainActivity", mEmail+" , "+mPassword);
             int successStatus =0;
 
             LoginAuthentication loginAuthentication = new LoginAuthentication(mEmail, mPassword);
@@ -419,6 +443,8 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
                 editor.putString(studentID, mEmail);
                 editor.putString("secKey", loginAuthentication.getSecretKey());
                 editor.commit();
+                Info.log("Session created: " + mEmail+" - "+loginAuthentication.getSecretKey());
+
             }
             /*
             try {
@@ -454,6 +480,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
                 startActivity(i);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.setText("");
                 mPasswordView.requestFocus();
             }
         }

@@ -1,4 +1,4 @@
-package net.helper;
+package net.utils;
 
 
 /**
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -21,15 +21,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.net.Uri;
-import android.util.Log;
+//import android.util.Log;
 
-public class HttpJsonParser {
+public class HttpsJsonParser {
 
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
-    HttpURLConnection urlConnection = null;
-
+    HttpsURLConnection urlConnection = null;
+    //HttpURLConnection urlConnection = null;
     // function get json from url
     // by making HTTP POST or GET method
     public JSONObject makeHttpRequest(String url, String method,
@@ -51,13 +51,13 @@ public class HttpJsonParser {
             if ("GET".equals(method)) {
                 url = url + "?" + encodedParams;
                 urlObj = new URL(url);
-                urlConnection = (HttpURLConnection) urlObj.openConnection();
+                urlConnection = (HttpsURLConnection) urlObj.openConnection();
                 urlConnection.setRequestMethod(method);
 
 
             } else {
                 urlObj = new URL(url);
-                urlConnection = (HttpURLConnection) urlObj.openConnection();
+                urlConnection = (HttpsURLConnection) urlObj.openConnection();
                 urlConnection.setRequestMethod(method);
                 urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 urlConnection.setRequestProperty("Content-Length", String.valueOf(encodedParams.getBytes().length));
@@ -85,9 +85,9 @@ public class HttpJsonParser {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
-            Log.e("JSON Parser", "Error parsing data " + e.toString());
+            //Log.e("JSON Parser", "Error parsing data " + e.toString());
         } catch (Exception e) {
-            Log.e("Exception", "Error parsing data " + e.toString());
+            //Log.e("Exception", "Error parsing data " + e.toString());
         }
 
         // return JSON String

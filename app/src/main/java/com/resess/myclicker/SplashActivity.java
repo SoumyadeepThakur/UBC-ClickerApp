@@ -1,4 +1,4 @@
-package com.sthakur.clickerapp;
+package com.resess.myclicker;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(this, UserActivity.class);
+        Intent intent = new Intent(this, MenuActivity.class);
         startActivity(intent);
         finish();
 

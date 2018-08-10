@@ -1,10 +1,10 @@
-package com.sthakur.clickerapp;
+package com.resess.myclicker;
 
-import android.util.Log;
+//import android.util.Log;
 
-import com.sthakur.clickerapp.constants.AppConstants;
+import com.resess.myclicker.constants.AppConstants;
 
-import net.helper.HttpJsonParser;
+import net.utils.HttpsJsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,22 +31,22 @@ public class CourseLoader
     }
     public boolean load()
     {
-        HttpJsonParser httpJsonParser = new HttpJsonParser();
+        HttpsJsonParser httpsJsonParser = new HttpsJsonParser();
         Map<String, String> httpParams = new HashMap<>();
         //Populating request parameters
-        Log.d("load()", "Populating request parameters");
+        //Log.d("load()", "Populating request parameters");
         httpParams.put(AppConstants.KEY_SKEY, sessId);
         httpParams.put(AppConstants.KEY_STUDENT_ID, studentId);
-        Log.d("load()", AppConstants.KEY_SKEY+" - "+sessId + " , " + AppConstants.KEY_STUDENT_ID + " - "+studentId);
-        JSONObject jsonObject = httpJsonParser.makeHttpRequest(AppConstants.BASE_URL + "courses.php", "POST", httpParams);
+        //Log.d("load()", AppConstants.KEY_SKEY+" - "+sessId + " , " + AppConstants.KEY_STUDENT_ID + " - "+studentId);
+        JSONObject jsonObject = httpsJsonParser.makeHttpRequest(AppConstants.BASE_URL + "courses.php", "POST", httpParams);
         try {
             success = jsonObject.getInt(AppConstants.KEY_SUCCESS);
-            Log.d("authenticate()", ""+success);
+            //Log.d("authenticate()", ""+success);
             if (success == 1)
             {
                 JSONArray data = jsonObject.getJSONArray(AppConstants.KEY_DATA);
                 //String secretKey = jsonObject.getString(AppConstants.KEY_SKEY);
-                Log.d("authenticate()", ""+data+" - "+data);
+                //Log.d("authenticate()", ""+data+" - "+data);
                 for (int i=0; i<data.length(); i++)
                 {
                     JSONObject obj = data.getJSONObject(i);

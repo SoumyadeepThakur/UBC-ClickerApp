@@ -1,19 +1,9 @@
-package com.sthakur.clickerapp;
+package com.resess.myclicker;
 
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
+//
 /**
  * Created by soumyadeep on 12/7/18.
  */
@@ -28,15 +18,15 @@ public class GPSManager implements LocationListener
         //Toast.makeText(getBaseContext(),  "Location changed: Lat: " + loc.getLatitude() + " Lng: "
                         //+ loc.getLongitude(), Toast.LENGTH_SHORT).show();
         String longitude = "Longitude: " + loc.getLongitude();
-        Log.d("gps", longitude);
+        //Log.d("gps", longitude);
         String latitude = "Latitude: " + loc.getLatitude();
-        Log.v("gps", latitude);
+        //Log.v("gps", latitude);
 
         /*------- To get city name from coordinates -------- */
 
         s = longitude + "\n" + latitude;
 
-        Log.d("gps", s);
+        //Log.d("gps", s);
         //editLocation.setText(s);
     }
 
