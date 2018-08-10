@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sthakur.clickerapp">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0"
+    package="com.resess.myclicker">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!-- <uses-permission android:name="android.permission.GET_ACCOUNTS" /> -->
+    <!-- <uses-permission android:name="android.permission.READ_PROFILE" />  -->
+    <!-- <uses-permission android:name="android.permission.READ_CONTACTS" /> -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-feature android:name="android.hardware.location.gps"/>
 
+    <uses-feature android:name="android.hardware.location.gps" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SplashActivity"
+            android:name="com.resess.myclicker.SplashActivity"
             android:label="@string/app_name"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -31,21 +32,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UserActivity"
-            android:label="@string/welcome"></activity>
+            android:name="com.resess.myclicker.MainActivity"
+            android:label="@string/login" />
         <activity
-            android:name=".MainActivity"
-            android:label="@string/login"></activity>
-        <activity
-            android:name=".CourseListActivity"
-            android:label="@string/course_list"></activity>
+            android:name="com.resess.myclicker.CourseListActivity"
+            android:label="@string/course_list" />
         <activity
             android:name=".Act3"
-            android:label="@string/questions"></activity>
+            android:label="@string/questions" />
         <activity
-            android:name=".MenuActivity"
+            android:name="com.resess.myclicker.MenuActivity"
             android:label="@string/title_activity_menu"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.resess.myclicker.InfoActivity"
+            android:label="@string/title_info"/>
+
+
     </application>
 
 </manifest>

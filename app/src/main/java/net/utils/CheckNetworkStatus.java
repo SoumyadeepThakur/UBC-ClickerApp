@@ -1,4 +1,4 @@
-package net.helper;
+package net.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

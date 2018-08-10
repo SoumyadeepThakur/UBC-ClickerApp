@@ -1,4 +1,4 @@
-package com.sthakur.clickerapp;
+package com.resess.myclicker;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

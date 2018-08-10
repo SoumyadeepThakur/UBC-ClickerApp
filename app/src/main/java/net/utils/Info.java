@@ -1,8 +1,8 @@
-package net.helper;
+package net.utils;
 
-import android.util.Log;
+//import android.util.Log;
 
-import com.sthakur.clickerapp.constants.AppConstants;
+import com.resess.myclicker.constants.AppConstants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +14,7 @@ import java.util.Map;
  * Created by soumyadeep on 16/7/18.
  */
 
-public class Logger
+public class Info
 {
 
     private static String url = AppConstants.BASE_URL + "logger.php";
@@ -22,28 +22,26 @@ public class Logger
     public static boolean log(String data)
     {
         try {
-            HttpJsonParser httpJsonParser = new HttpJsonParser();
+            HttpsJsonParser httpsJsonParser = new HttpsJsonParser();
             Map<String, String> httpParams = new HashMap<>();
             //Populating request parameters
-            Log.d("log()", "Populating request parameters");
+            //Log.d("log()", "Populating request parameters");
             httpParams.put("data", data);
-            Log.d("log()", "data - " + data);
-            JSONObject jsonObject = httpJsonParser.makeHttpRequest(url, "POST", httpParams);
+            //Log.d("log()", "data - " + data);
+            JSONObject jsonObject = httpsJsonParser.makeHttpRequest(url, "POST", httpParams);
             try {
                 int success = jsonObject.getInt(AppConstants.KEY_SUCCESS);
-                return (success == 1);
+                boolean v = success == 1;
+                return v;
 
             } catch (JSONException e) {
                 e.printStackTrace();
                 return false;
-            } finally {
-                return false;
             }
         }
         catch (Exception e)
-        {}
-        finally
         {return false;}
+
     }
 }
 

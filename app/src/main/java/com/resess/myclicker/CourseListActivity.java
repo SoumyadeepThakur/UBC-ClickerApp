@@ -1,4 +1,4 @@
-package com.sthakur.clickerapp;
+package com.resess.myclicker;
 
 import android.Manifest;
 import android.content.Context;
@@ -10,25 +10,22 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.content.SharedPreferences;
-import android.util.Log;
+//import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import net.helper.CheckNetworkStatus;
-import net.helper.Logger;
+import com.resess.myclicker.constants.AppConstants;
+
+import net.utils.CheckNetworkStatus;
+import net.utils.Info;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +42,8 @@ public class CourseListActivity extends AppCompatActivity
     private HashMap<Integer, String> coursesMap;
     private ArrayAdapter<String> courseAdapter;
     private ListView lv;
+    private LocTask lTask;
+    private String sec2;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +54,10 @@ public class CourseListActivity extends AppCompatActivity
 
         String sid = sharedPref.getString("sidKey", null);
         String sec = sharedPref.getString("secKey", null);
+        sec2=sec;
 
-        //placeVerifier();
+        //lTask = new LocTask();
+        //lTask.execute((Void)null);
         List<String> cl = loadCourses(sid, sec);
         final String[] arr = new String[coursesMap.size()];
         final int[] cId = new int[coursesMap.size()];
@@ -69,43 +70,6 @@ public class CourseListActivity extends AppCompatActivity
             cId[k++] = entry.getKey();
             reverse.put(arr[k-1], cId[k-1]);
         }
-
-        //LinearLayout courseLayout = new LinearLayout(this);
-        //courseLayout.setOrientation(LinearLayout.VERTICAL);
-        //courseLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
-
-        //final TextView titleView = new TextView(this);
-        //LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        //titleView.setLayoutParams(lparams);
-        //titleView.setTextAppearance(this, android.R.attr.textAppearanceLarge);
-        //titleView.setText("Hallo Welt!");
-        //courseLayout.addView(titleView);
-        /*
-        Button[] courseButtons = new Button[k];
-        for (int i=0; i<k; i++)
-        {
-            courseButtons[i] = new Button(this);
-            courseButtons[i].setLayoutParams(lparams);
-            courseButtons[i].setText(arr[i]);
-            final int iid = cId[i];
-            final String iname = arr[i];
-            courseButtons[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent in = new Intent(CourseListActivity.this, Act3.class);
-
-
-                    in.putExtra("id", iid);
-                    in.putExtra("name", iname);
-                    Log.d("CourseListActivity", "Button "+iname+" clicked");
-                    startActivity(in);
-
-                }
-
-            });
-            courseLayout.addView(courseButtons[i]);
-        }
-        */
 
         lv = (ListView)findViewById(R.id.course_list);
         courseAdapter = new ArrayAdapter<String>(this, R.layout.list_item, R.id.course_name, cl);
@@ -124,7 +88,7 @@ public class CourseListActivity extends AppCompatActivity
 
                 in.putExtra("id", reverse.get(selectedItem));
                 in.putExtra("name", selectedItem);
-                Log.d("CourseListActivity", "Button "+selectedItem+" clicked");
+                //Log.d("CourseListActivity", "Button "+selectedItem+" clicked");
                 startActivity(in);
 
             }
@@ -136,6 +100,9 @@ public class CourseListActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 new LoginAuthentication().endSession(sharedPref.getString("secKey", null), sharedPref.getString("sidKey", null));
+                AppConstants.LOC = null;
+                Info.log("Session closed: " + sharedPref.getString("secKey", null) +" - " + sharedPref.getString("sidKey", null));
+                Info.log("LoginActivity");
                 SharedPreferences.Editor editor =  sharedPref.edit();
                 editor.clear();
                 editor.commit();
@@ -146,6 +113,25 @@ public class CourseListActivity extends AppCompatActivity
         //setContentView(courseLayout);
 
     }
+    @Override
+    public void onPause()
+    {
+        Info.log("onPause - CourseListActivity");
+        super.onPause();
+    }
+    @Override
+    public void onBackPressed() {
+        new LoginAuthentication().endSession(sharedPref.getString("secKey", null), sharedPref.getString("sidKey", null));
+        AppConstants.LOC = null;
+        Info.log("Session closed: " + sharedPref.getString("secKey", null) +" - " + sharedPref.getString("sidKey", null));
+        Info.log("LoginActivity");
+
+        SharedPreferences.Editor editor =  sharedPref.edit();
+        editor.clear();
+        editor.commit();
+        startActivity(new Intent(CourseListActivity.this, MainActivity.class));
+        //Info.log("MainActivity");
+    }
     private List<String> loadCourses(String sid, String sec)
     {
         CourseLoader courseLoader = new CourseLoader(sid, sec);
@@ -155,91 +141,17 @@ public class CourseListActivity extends AppCompatActivity
         return s;
 
     }
-
-    private boolean placeVerifier()
-    {
-        if (CheckNetworkStatus.isNetworkAvailable(getApplicationContext()))
-        {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                // Permission is not granted
-                // Should we show an explanation?
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    // Show an explanation to the user *asynchronously* -- don't block
-                    // this thread waiting for the user's response! After the user
-                    // sees the explanation, try again to request the permission.
-                } else {
-                    // No explanation needed; request the permission
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                            1);
-
-                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                    // app-defined int constant. The callback method gets the
-                    // result of the request.
-                }
-            } else {
-                // Permission has already been granted
-
-
-                try {
-                    LocationListener locationListener = new GPSManager();
-
-                    LocationManager locationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-                    List<String> providers = locationManager.getProviders(true);
-                    Location best=null;
-                    for (String provider : providers)
-                    {
-                        Location l = locationManager.getLastKnownLocation(provider);
-                        if (l == null) {
-                            continue;
-                        }
-                        if (best == null || l.getAccuracy() < best.getAccuracy()) {
-                            // Found best last known location: %s", l);
-                            best= l;
-                        }
-                    }
-                    String p = best.toString();
-                    Log.d("gps", p);
-                    return Logger.log("CourseListActivity - location - " + p);
-                    //if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-                    //{
-
-                    //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
-                    //    Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    //    String p = currentLocation.toString();
-                    //}
-                    //String x = ((GPSManager)locationListener).getValues();
-                    //Log.d("Act 3", x);
-
-                } catch (SecurityException se) {
-                    Log.d("Act3", "cant get loc");
-                }
-                finally {
-                    return false;
-                }
-            }
-            //attemptLogin();
-        }
-        return false;
-    }
     @Override
-    public void onBackPressed() {
-        // your code.
+    public void onResume()
+    {
+        lTask = new LocTask();
+        lTask.execute((Void)null);
+        super.onResume();
     }
 
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean>
+
+    public class LocTask extends AsyncTask<Void, Void, Boolean>
     {
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-
 
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -259,11 +171,13 @@ public class CourseListActivity extends AppCompatActivity
                         // Show an explanation to the user *asynchronously* -- don't block
                         // this thread waiting for the user's response! After the user
                         // sees the explanation, try again to request the permission.
+                        Info.log("CourseListActivity - location - " + sec2);
                     } else {
                         // No explanation needed; request the permission
                         ActivityCompat.requestPermissions(CourseListActivity.this,
                                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                 1);
+                        Info.log("CourseListActivity - location - " + sec2);
 
                         // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                         // app-defined int constant. The callback method gets the
@@ -291,22 +205,21 @@ public class CourseListActivity extends AppCompatActivity
                             }
                         }
                         String p = best.toString();
-                        Log.d("gps", p);
-                        return Logger.log("CourseListActivity - location - " + p);
-                        //if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-                        //{
+                        //Log.d("gps", p);
+                        SharedPreferences myPref = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString("lastloc", p);
+                        //editor.putString("secKey", loginAuthentication.getSecretKey());
+                        editor.commit();
+                        return Info.log("CourseListActivity - location - " + p + " : " + sec2);
 
-                        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
-                        //    Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        //    String p = currentLocation.toString();
-                        //}
-                        //String x = ((GPSManager)locationListener).getValues();
-                        //Log.d("Act 3", x);
 
                     } catch (SecurityException se) {
-                        Log.d("Act3", "cant get loc");
+                        Info.log("CourseListActivity : " + sec2);
+                        //Log.d("Act3", "cant get loc");
                     }
                     finally {
+                        //Info.log("InfoActivity : " + sec2);
                         return false;
                     }
                 }

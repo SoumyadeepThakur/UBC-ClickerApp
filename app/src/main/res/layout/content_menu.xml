@@ -1,11 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.sthakur.clickerapp.MenuActivity"
+    tools:context="com.resess.myclicker.MenuActivity"
     tools:showIn="@layout/app_bar_menu">
 
-</android.support.constraint.ConstraintLayout>
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="326dp"
+        android:layout_height="118dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/textView2"
+        android:layout_marginTop="23dp"
+        app:srcCompat="@drawable/background"
+        tools:layout_editor_absoluteX="29dp"
+        tools:layout_editor_absoluteY="33dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="324dp"
+        android:layout_height="169dp"
+        android:layout_below="@+id/imageView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="82dp"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:text="Welcome to the MyClicker App for UBC!"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="#A19421"
+        tools:layout_editor_absoluteX="30dp"
+        tools:layout_editor_absoluteY="253dp" />
+</RelativeLayout>
